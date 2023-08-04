@@ -1,5 +1,8 @@
 package br.com.luiscunha.cm.modelo;
 
+import br.com.luiscunha.cm.excecao.ExplosaoException;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -23,10 +26,16 @@ public class Tabuleiro {
     }
 
     public void abrir(int linha, int coluna){
-        campos.parallelStream()
-                .filter(c -> c.getLinha() == linha && c.getColuna() == coluna)
-                .findFirst()
-                .ifPresent(c -> c.abrir());
+        try{
+            campos.parallelStream()
+                    .filter(c -> c.getLinha() == linha && c.getColuna() == coluna)
+                    .findFirst()
+                    .ifPresent(c -> c.abrir());
+        }
+        catch (ExplosaoException e){
+            campos.forEach(c -> c.setAberto(true));
+            throw e;
+        }
     }
     public void alterarMarcacao(int linha, int coluna){
         campos.parallelStream()
@@ -53,10 +62,11 @@ public class Tabuleiro {
         long minasArmadas = 0;
         Predicate<Campo> minado = c -> c.isMinado();
 
-        do{
+        do {
             minasArmadas = campos.stream().filter(minado).count();
-            int aleatorio = (int) (Math.random() * campos.size());
+            int aleatorio = 0;
             campos.get(aleatorio).minar();
+            aleatorio = (int) (Math.random() * campos.size());
         } while(minasArmadas < minas);
     }
 
@@ -72,8 +82,19 @@ public class Tabuleiro {
     public String toString(){
         StringBuilder sb = new StringBuilder();
 
+        sb.append("  ");
+        for(int c = 0; c < colunas; c++){
+            sb.append(" ");
+            sb.append(c);
+            sb.append(" ");
+        }
+        
+        sb.append("\n");
+
         int i =0;
         for(int l = 0; l < linhas; l++){
+            sb.append(l);
+            sb.append(" ");
             for(int c = 0; c < colunas; c++){
                 sb.append(" ");
                 sb.append(campos.get(i));
