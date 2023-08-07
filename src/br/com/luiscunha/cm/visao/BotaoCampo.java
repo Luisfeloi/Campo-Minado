@@ -40,6 +40,7 @@ public class BotaoCampo extends JButton implements CampoObservador, MouseListene
 
    private void aplicarEstiloPadrao() {
       setBackground(GB_PADRAO);
+      setBorder(BorderFactory.createBevelBorder(0));
       setText("");
    }
 
