@@ -23,6 +23,10 @@ public class Tabuleiro implements CampoObservador {
         associarVizinhos();
         sortearMinas();
     }
+
+    public void paraCadaCampo(Consumer<Campo> funcao){
+        campos.forEach(funcao);
+    }
     public void registarObservador(Consumer <ResultadoEvento> observador){
         observadores.add(observador);
     }
@@ -64,7 +68,9 @@ public class Tabuleiro implements CampoObservador {
         Predicate<Campo> minado = c -> c.isMinado();
 
         do {
-            minasArmadas = campos.stream().filter(minado).count();
+            minasArmadas = campos.stream()
+                    .filter(minado)
+                    .count();
             int aleatorio = 0;
             campos.get(aleatorio).minar();
             aleatorio = (int) (Math.random() * campos.size());
@@ -80,11 +86,11 @@ public class Tabuleiro implements CampoObservador {
         sortearMinas();
     }
 
-    public int getColunas() {
-        return colunas;
-    }
     public int getLinhas() {
         return linhas;
+    }
+    public int getColunas() {
+        return colunas;
     }
 
     @Override
