@@ -13,13 +13,14 @@ import java.awt.event.MouseListener;
 public class BotaoCampo extends JButton implements CampoObservador, MouseListener {
 
    private final Color GB_PADRAO = new Color(184,184,184);
-   private final Color GB_MARCADO = new Color(8,179,247);
+   private final Color GB_MARCAR = new Color(8,179,247);
    private final Color GB_EXPLODIR = new Color(189,66,68);
    private final Color TEXTO_VERDE = new Color(0,100,0);
    private Campo campo;
    public BotaoCampo(Campo campo){
       this.campo = campo;
       setBackground(GB_PADRAO);
+      setOpaque(true);
       setBorder(BorderFactory.createBevelBorder(0));
       addMouseListener(this);
       campo.registrarObservador(this);
@@ -38,17 +39,31 @@ public class BotaoCampo extends JButton implements CampoObservador, MouseListene
    }
 
    private void aplicarEstiloPadrao() {
+      setBackground(GB_PADRAO);
+      setText("");
    }
 
    private void aplicarEstiloExplodor() {
+      setBackground(GB_EXPLODIR);
+      setForeground(Color.WHITE);
+      setText("X");
    }
 
    private void aplicarEstiloMarcar() {
+      setBackground(GB_MARCAR);
+      setForeground(Color.BLACK);
+      setText("X");
    }
 
    private void aplicarEstiloAbrir() {
-      setBackground(GB_PADRAO);
       setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+      if(campo.isMinado()){
+         setBackground(GB_EXPLODIR);
+         return;
+      }
+
+      setBackground(GB_PADRAO);
 
       switch (campo.minasNaVizinhanca()){
          case 1: setForeground(TEXTO_VERDE);
